@@ -54,4 +54,14 @@ public interface UserMapper extends BaseMapper<User> {
      * 检查手机号是否存在
      */
     int checkPhoneExists(@Param("phone") String phone);
+    
+    /**
+     * 根据邮箱查询用户
+     */
+    User selectByEmail(@Param("email") String email);
+    
+    /**
+     * 根据手机号查询用户
+     */
+    User selectByPhone(@Param("phone") String phone);
 }

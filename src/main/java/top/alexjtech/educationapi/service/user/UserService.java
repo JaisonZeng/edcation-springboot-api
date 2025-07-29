@@ -59,4 +59,30 @@ public interface UserService {
      * @param loginIp 登录IP
      */
     void updateLastLoginInfo(Long userId, String loginIp);
+
+    /**
+     * 根据ID更新用户信息
+     *
+     * @param user 用户对象
+     * @return 是否更新成功
+     */
+    boolean updateById(User user);
+
+    /**
+     * 检查邮箱是否已存在
+     * 
+     * @param email 待检查的邮箱
+     * @param excludeUserId 需要排除的用户ID，可为null
+     * @return 如果邮箱已存在则返回true，否则返回false
+     */
+    boolean isEmailExists(String email, Long excludeUserId);
+
+    /**
+     * 检查手机号是否已存在
+     * 
+     * @param phone 待检查的手机号
+     * @param excludeUserId 需要排除的用户ID，可为null
+     * @return 如果手机号已存在则返回true，否则返回false
+     */
+    boolean isPhoneExists(String phone, Long excludeUserId);
 }

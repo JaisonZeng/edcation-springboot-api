@@ -74,3 +74,13 @@ logging:
     root: info
     top.alexjtech.educationapi: debug
     top.alexjtech.educationapi.mapper: debug
+
+# 应用配置
+app:
+  upload:
+    # 头像上传目录（相对于项目根目录）
+    avatar-dir: uploads/avatars/
+    # 基础URL（用于构建文件访问链接）
+    base-url: http://127.0.0.1:8080/api/avatar/
+    # 最大文件大小（字节）5MB = 5242880
+    max-size: 5242880

@@ -6,11 +6,13 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import top.alexjtech.educationapi.dto.WechatLoginDTO;
 import top.alexjtech.educationapi.dto.auth.LoginDTO;
 import top.alexjtech.educationapi.entity.User;
 import top.alexjtech.educationapi.mapper.UserMapper;
 import top.alexjtech.educationapi.service.user.UserService;
+import top.alexjtech.educationapi.util.security.CustomUserDetails;
 import top.alexjtech.educationapi.util.security.JwtUtil;
 import top.alexjtech.educationapi.vo.auth.TokenVO;
 
@@ -70,14 +72,11 @@ public class UserServiceImpl implements UserService {
         // 根据用户类型设置权限
         String role = getRoleByUserType(user.getUserType());
         
-        // 创建UserDetails对象
-        org.springframework.security.core.userdetails.User userDetails = new org.springframework.security.core.userdetails.User(
+        // 创建自定义UserDetails对象
+        CustomUserDetails userDetails = new CustomUserDetails(
                 user.getUsername(),
                 user.getPassword(),
-                true,
-                true,
-                true,
-                true,
+                user.getId(), // 传递用户ID
                 java.util.Collections.singletonList(new org.springframework.security.core.authority.SimpleGrantedAuthority(role))
         );
 
@@ -147,14 +146,11 @@ public class UserServiceImpl implements UserService {
         // 根据用户类型设置权限
         String role = getRoleByUserType(user.getUserType());
 
-        // 创建UserDetails对象
-        org.springframework.security.core.userdetails.User userDetails = new org.springframework.security.core.userdetails.User(
+        // 创建自定义UserDetails对象
+        CustomUserDetails userDetails = new CustomUserDetails(
                 user.getUsername() != null ? user.getUsername() : user.getWechatOpenId(),
                 user.getPassword() != null ? user.getPassword() : "",
-                true,
-                true,
-                true,
-                true,
+                user.getId(), // 传递用户ID
                 java.util.Collections.singletonList(new org.springframework.security.core.authority.SimpleGrantedAuthority(role))
         );
 
@@ -190,5 +186,71 @@ public class UserServiceImpl implements UserService {
     @Override
     public void updateLastLoginInfo(Long userId, String loginIp) {
         userMapper.updateLastLoginInfo(userId, LocalDateTime.now(), loginIp);
+    }
+
+    @Override
+    public boolean updateById(User user) {
+        return userMapper.updateById(user) > 0;
+    }
+
+    @Override
+    public boolean isEmailExists(String email, Long excludeUserId) {
+        if (!StringUtils.hasText(email)) {
+            return false;
+        }
+        
+        // 检查邮箱格式
+        if (!isValidEmail(email)) {
+            return false;
+        }
+        
+        // 查询是否存在相同邮箱的用户（排除指定用户ID）
+        User user = userMapper.selectByEmail(email);
+        return user != null && (excludeUserId == null || !user.getId().equals(excludeUserId));
+    }
+
+    @Override
+    public boolean isPhoneExists(String phone, Long excludeUserId) {
+        if (!StringUtils.hasText(phone)) {
+            return false;
+        }
+        
+        // 检查手机号格式
+        if (!isValidPhone(phone)) {
+            return false;
+        }
+        
+        // 查询是否存在相同手机号的用户（排除指定用户ID）
+        User user = userMapper.selectByPhone(phone);
+        return user != null && (excludeUserId == null || !user.getId().equals(excludeUserId));
+    }
+
+    /**
+     * 检查邮箱格式是否有效
+     * @param email 邮箱地址
+     * @return 是否有效
+     */
+    public boolean isValidEmail(String email) {
+        if (!StringUtils.hasText(email)) {
+            return false;
+        }
+
+        String emailRegex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$";
+        return email.matches(emailRegex);
+    }
+
+    /**
+     * 检查手机号格式是否有效
+     * @param phone 手机号
+     * @return 是否有效
+     */
+    public boolean isValidPhone(String phone) {
+        if (!StringUtils.hasText(phone)) {
+            return false;
+        }
+
+        // 中国大陆手机号正则表达式
+        String phoneRegex = "^1[3-9]\\d{9}$";
+        return phone.matches(phoneRegex);
     }
 }

@@ -53,4 +53,16 @@
         WHERE phone = #{phone} AND deleted = 0
     </select>
 
+    <!-- 根据邮箱查询用户 -->
+    <select id="selectByEmail" resultType="top.alexjtech.educationapi.entity.User">
+        SELECT * FROM sys_user
+        WHERE email = #{email} AND deleted = 0
+    </select>
+
+    <!-- 根据手机号查询用户 -->
+    <select id="selectByPhone" resultType="top.alexjtech.educationapi.entity.User">
+        SELECT * FROM sys_user
+        WHERE phone = #{phone} AND deleted = 0
+    </select>
+
 </mapper>

@@ -6,6 +6,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import top.alexjtech.educationapi.util.security.CustomUserDetails;
 import top.alexjtech.educationapi.entity.User;
 import top.alexjtech.educationapi.mapper.UserMapper;
 
@@ -35,14 +36,11 @@ public class CustomUserDetailsService implements UserDetailsService {
                 new SimpleGrantedAuthority("ROLE_USER")
         );
 
-        // 返回Spring Security的UserDetails对象
-        return new org.springframework.security.core.userdetails.User(
+        // 返回自定义UserDetails对象，包含用户ID
+        return new CustomUserDetails(
                 user.getUsername(),
                 user.getPassword(),
-                user.getStatus() == null || user.getStatus() == 0, // 是否启用（0：正常，1：禁用）
-                true, // 账号是否过期
-                true, // 凭证是否过期
-                true, // 是否锁定
+                user.getId(), // 传递用户ID
                 authorities
         );
     }

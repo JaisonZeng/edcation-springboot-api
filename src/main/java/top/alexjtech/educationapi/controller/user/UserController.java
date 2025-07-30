@@ -38,10 +38,10 @@ public class UserController {
   private final UserService userService;
   
   // 从配置文件读取上传配置
-  @Value("${app.upload.avatar-dir:uploads/avatars/}")
+  @Value("${app.upload.upload-dir:uploads/}")
   private String uploadDir;
   
-  @Value("${app.upload.base-url:http://127.0.0.1:8080/api/avatar/}")
+  @Value("${app.upload.base-url:http://127.0.0.1:8080/api/}")
   private String baseUrl;
   
   @Value("${app.upload.max-size:5242880}") // 5MB
@@ -105,7 +105,7 @@ public class UserController {
           }
           
           // 创建上传目录
-          Path uploadPath = Paths.get(uploadDir);
+          Path uploadPath = Paths.get(uploadDir + "/avatars/");
           if (!Files.exists(uploadPath)) {
               Files.createDirectories(uploadPath);
           }
@@ -119,7 +119,7 @@ public class UserController {
           Files.write(filePath, avatar.getBytes());
           
           // 构建文件URL
-          String avatarUrl = baseUrl + uploadDir + fileName;
+          String avatarUrl = baseUrl + uploadDir + "avatars/" + fileName;
           
           // 更新用户头像信息
           User user = userService.getUserById(currentUserId);

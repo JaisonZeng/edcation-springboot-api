@@ -62,7 +62,7 @@ jwt:
 # 头像上传配置
 app:
   upload:
-    avatar-dir: uploads/avatars/
+    upload-dir: uploads/
     base-url: http://127.0.0.1:8080/api/
     max-size: 5242880
 

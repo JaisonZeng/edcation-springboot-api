@@ -49,7 +49,7 @@ public class SecurityConfig {
                                 "/test/**",               // 测试接口
                                 "/auth/**",              // 认证接口
                                 "/public/**",            // 公开接口
-                                "/avatar/**",            // 头像文件
+                                "/uploads/**",           // 上传文件（统一入口）
                                 "/swagger-ui/**",        // Swagger UI
                                 "/swagger-ui.html",      // Swagger UI首页
                                 "/v3/api-docs/**",       // OpenAPI文档

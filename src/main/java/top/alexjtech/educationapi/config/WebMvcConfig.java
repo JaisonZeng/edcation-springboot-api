@@ -17,8 +17,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
     
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        // 映射上传的头像目录到/avatar/**路径
-        registry.addResourceHandler("/avatar/**")
-                .addResourceLocations("file:./" + avatarDir + "/");
+        // 统一通过/uploads/**访问所有上传文件
+        registry.addResourceHandler("/uploads/**")
+                .addResourceLocations("file:./uploads/");
     }
 }

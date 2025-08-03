@@ -2,6 +2,7 @@ package top.alexjtech.educationapi.util.security;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
+import top.alexjtech.educationapi.entity.CustomUserDetails;
 import top.alexjtech.educationapi.entity.User;
 
 /**

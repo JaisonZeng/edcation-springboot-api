@@ -6,7 +6,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import top.alexjtech.educationapi.util.security.CustomUserDetails;
+import top.alexjtech.educationapi.entity.CustomUserDetails;
 import top.alexjtech.educationapi.entity.User;
 import top.alexjtech.educationapi.mapper.UserMapper;
 

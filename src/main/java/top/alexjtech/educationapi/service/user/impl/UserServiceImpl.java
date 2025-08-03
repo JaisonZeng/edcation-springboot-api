@@ -9,10 +9,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import top.alexjtech.educationapi.dto.WechatLoginDTO;
 import top.alexjtech.educationapi.dto.auth.LoginDTO;
+import top.alexjtech.educationapi.entity.CustomUserDetails;
 import top.alexjtech.educationapi.entity.User;
 import top.alexjtech.educationapi.mapper.UserMapper;
 import top.alexjtech.educationapi.service.user.UserService;
-import top.alexjtech.educationapi.util.security.CustomUserDetails;
 import top.alexjtech.educationapi.util.security.JwtUtil;
 import top.alexjtech.educationapi.vo.auth.TokenVO;
 
@@ -252,5 +252,10 @@ public class UserServiceImpl implements UserService {
         // 中国大陆手机号正则表达式
         String phoneRegex = "^1[3-9]\\d{9}$";
         return phone.matches(phoneRegex);
+    }
+
+    @Override
+    public PasswordEncoder getPasswordEncoder() {
+        return passwordEncoder;
     }
 }

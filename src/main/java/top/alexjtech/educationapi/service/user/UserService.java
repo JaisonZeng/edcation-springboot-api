@@ -1,5 +1,6 @@
 package top.alexjtech.educationapi.service.user;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import top.alexjtech.educationapi.dto.WechatLoginDTO;
 import top.alexjtech.educationapi.dto.auth.LoginDTO;
 import top.alexjtech.educationapi.entity.User;
@@ -85,4 +86,11 @@ public interface UserService {
      * @return 如果手机号已存在则返回true，否则返回false
      */
     boolean isPhoneExists(String phone, Long excludeUserId);
+
+    /**
+     * 获取密码编码器
+     * 
+     * @return 密码编码器
+     */
+    org.springframework.security.crypto.password.PasswordEncoder getPasswordEncoder();
 }

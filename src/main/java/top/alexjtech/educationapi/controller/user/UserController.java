@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import top.alexjtech.educationapi.common.ApiResponse;
 import top.alexjtech.educationapi.dto.user.UserUpdateDTO;
+import top.alexjtech.educationapi.dto.user.PasswordChangeDTO;
+import top.alexjtech.educationapi.entity.CustomUserDetails;
 import top.alexjtech.educationapi.entity.User;
 import top.alexjtech.educationapi.service.user.UserService;
 import top.alexjtech.educationapi.util.security.SecurityUtil;
@@ -298,6 +300,62 @@ public class UserController {
           } catch (Exception e) {
               log.warn("删除旧头像文件失败: {}", oldAvatarUrl, e);
           }
+      }
+  }
+  
+  /**
+   * 修改用户密码
+   * 
+   * @param passwordChangeDTO 密码修改请求数据
+   * @param authentication    认证信息
+   * @return 修改结果
+   */
+  @Operation(summary = "修改用户密码", description = "修改当前登录用户的密码")
+  @PostMapping("/change-password")
+  public ResponseEntity<ApiResponse<String>> changePassword(
+          @Valid @RequestBody PasswordChangeDTO passwordChangeDTO,
+          Authentication authentication) {
+      
+      try {
+          // 获取当前用户
+          CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+          User currentUser = userService.getUserById(userDetails.getUserId());
+          
+          if (currentUser == null) {
+              return ResponseEntity.status(404)
+                      .body(ApiResponse.notFound("用户不存在"));
+          }
+          
+          // 验证原密码是否正确
+          if (!userService.getPasswordEncoder().matches(passwordChangeDTO.getOldPassword(), currentUser.getPassword())) {
+              return ResponseEntity.badRequest()
+                      .body(ApiResponse.error("原密码不正确"));
+          }
+          
+          // 验证新密码与原密码是否相同
+          if (userService.getPasswordEncoder().matches(passwordChangeDTO.getNewPassword(), currentUser.getPassword())) {
+              return ResponseEntity.badRequest()
+                      .body(ApiResponse.error("新密码不能与原密码相同"));
+          }
+          
+          // 更新密码
+          String encodedNewPassword = userService.getPasswordEncoder().encode(passwordChangeDTO.getNewPassword());
+          currentUser.setPassword(encodedNewPassword);
+          boolean success = userService.updateById(currentUser);
+          
+          if (success) {
+              log.info("用户 {} 密码修改成功", currentUser.getId());
+              return ResponseEntity.ok(ApiResponse.success("密码修改成功"));
+          } else {
+              log.error("用户 {} 密码修改失败", currentUser.getId());
+              return ResponseEntity.status(500)
+                      .body(ApiResponse.error("密码修改失败"));
+          }
+          
+      } catch (Exception e) {
+          log.error("密码修改过程中发生错误", e);
+          return ResponseEntity.status(500)
+                  .body(ApiResponse.error("服务器内部错误"));
       }
   }
 }
